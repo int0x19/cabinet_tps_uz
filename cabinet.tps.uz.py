@@ -6,6 +6,10 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
+if len(sys.argv) <= 1:
+    print (sys.argv[0],' -u <user> -p <password> -f <output format>')
+    sys.exit(1)
+
 def main(argv):
    user = ''
    password = ''
@@ -25,6 +29,9 @@ def main(argv):
          password = arg
       elif opt in ("-f", "--format"):
          oformat = arg
+      else:
+        assert False, "unhandled option" 
+       
 #   print ('user is "', user)
 #   print ('password is "', password)
 #   print ('output format', oformat)

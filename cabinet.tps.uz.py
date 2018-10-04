@@ -6,8 +6,11 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
+def usage():
+    print (sys.argv[0],' -u <user> -p <password> -f <output format: txt, json, used>')
+
 if len(sys.argv) <= 1:
-    print (sys.argv[0],' -u <user> -p <password> -f <output format>')
+    usage()
     sys.exit(1)
 
 def main(argv):
@@ -17,11 +20,11 @@ def main(argv):
    try:
       opts, args = getopt.getopt(argv,"hu:p:f:",["user=","password="])
    except getopt.GetoptError:
-      print (sys.argv[0],' -u <user> -p <password> -f <output format>')
+      usage()
       sys.exit(2)
    for opt, arg in opts:
       if opt == '-h':
-         print (sys.argv[0],' -u <user> -p <password> -f <output format>')
+         usage()
          sys.exit()
       elif opt in ("-u", "--user"):
          user = arg

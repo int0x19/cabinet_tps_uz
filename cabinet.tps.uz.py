@@ -65,7 +65,7 @@ def main(argv):
      
    #print(r2.status_code)
    #print(r2.url)
-   #print(r2.text)
+#   print(r2.text)
 
 
    tariff = 0
@@ -113,9 +113,9 @@ def main(argv):
 # Get balance
 
    balance = soup.find('strong', {'class':'balance'})
-#print(balance.contents[0]) 
+   #print(balance.contents[0]) 
    balance = balance.contents[0]
-#block_left_list_items = block_left_list.find_all('p')
+   #block_left_list_items = block_left_list.find_all('p')
 
 #for block_left in block_left_list_items:
 # block = block_left.contents[0]
@@ -130,15 +130,18 @@ def main(argv):
 #print(jetpoints.contents[0])
    jet_balance=jetpoints.contents[0]
 
-   traffic = re.compile("(\w+): '(.*?)'")
+   traffic = re.compile("traffic: '(.*?)'")
+   #print("traffic:")
+   #print(traffic)
    script = soup.find("script", text=traffic)
-#print(script.text)
+   #print("script_txt")
+   #print(script.text)
 
    traffic_data = re.findall("value:\s+(\d+.\d+)", script.text)
-
-#print(traffic_data)
-#print(traffic_data[0])
-#print(traffic_data[1])
+   #print("traffic data:")
+   #print(traffic_data)
+   #print(traffic_data[0])
+   #print(traffic_data[1])
    used = traffic_data[0]
    unused = traffic_data[1]
 

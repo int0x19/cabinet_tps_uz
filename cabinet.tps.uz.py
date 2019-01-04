@@ -44,12 +44,6 @@ def args(argv):
          filename = arg
       else:
         assert False, "unhandled option" 
-       
-#   print ('user is "', user)
-#   print ('password is "', password)
-#   print ('output format', oformat)
-
-
 
 def get_data():
 
@@ -83,7 +77,6 @@ def get_data():
 
 def get_file(i):
    data = open(i, 'r').read()
-   #print(data)
    return data
 
 def parser(data):
@@ -108,12 +101,9 @@ def parser(data):
 
 # get profile
    block_left_list = soup.find(class_='profile')
-#print(block_left_list) 
    block_left_list_items = block_left_list.find_all('strong')
-
    for block_left in block_left_list_items:
     tariff = block_left.contents[0]
-   #print(block)
 
 # Get service tarif info and status
 
@@ -125,31 +115,21 @@ def parser(data):
 #print(service_header.contents[1].strip())
    tariff_date = service_header.contents[1].strip()
    service_list_items = service_list.find_all('td')
-
-
    login = service_list_items[0].contents[0]
    ipaddr = service_list_items[1].contents[0]
    tariff_pay = service_list_items[2].contents[0]
    status = service_list_items[3].contents[0]
-
 # Get balance
 
    balance = soup.find('strong', {'class':'balance'})
    #print(balance.contents[0]) 
    balance = balance.contents[0]
-   #block_left_list_items = block_left_list.find_all('p')
 
-#for block_left in block_left_list_items:
-# block = block_left.contents[0]
-# print(block)
-
-# get jet points
+   # get jet points
    block_left_fl = soup.find('div', {'class':'block left'} )
    block_left_jet = block_left_fl.find_next('div', {'class':'block left'} )
-
    jetpoints = block_left_jet.find('span')
-
-#print(jetpoints.contents[0])
+   #print(jetpoints.contents[0])
    jet_balance=jetpoints.contents[0]
 
    traffic = re.compile("traffic: '(.*?)'")

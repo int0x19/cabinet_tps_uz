@@ -91,7 +91,7 @@ def main(argv):
 
    for block_left in block_left_list_items:
     tariff = block_left.contents[0]
-    print(block)
+   #print(block)
 
 # Get service tarif info and status
 

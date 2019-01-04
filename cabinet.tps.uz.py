@@ -6,6 +6,13 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
+user = ''
+password = ''
+oformat = 'txt'
+
+#r2 = ''
+page = ''
+
 def usage():
     print (sys.argv[0],' -u <user> -p <password> -f <output format: txt, json, used>')
 
@@ -13,12 +20,9 @@ if len(sys.argv) <= 1:
     usage()
     sys.exit(1)
 
-def main(argv):
-   user = ''
-   password = ''
-   oformat = 'txt'
+def args(argv):
    try:
-      opts, args = getopt.getopt(argv,"hu:p:f:",["user=","password="])
+      opts, args = getopt.getopt(argv,"hu:p:f:i:",["user=","password="])
    except getopt.GetoptError:
       usage()
       sys.exit(2)
@@ -27,17 +31,27 @@ def main(argv):
          usage()
          sys.exit()
       elif opt in ("-u", "--user"):
+         global user
          user = arg
       elif opt in ("-p", "--password"):
+         global password
          password = arg
       elif opt in ("-f", "--format"):
+         global oformat
          oformat = arg
+      elif opt in ("-i"):
+         global page
+         page = arg
       else:
         assert False, "unhandled option" 
        
 #   print ('user is "', user)
 #   print ('password is "', password)
 #   print ('output format', oformat)
+
+
+
+def get_data():
 
    url_login = r'https://cabinet.tps.uz/ru/login'
    url_main = r'https://cabinet.tps.uz/ru'
@@ -60,14 +74,19 @@ def main(argv):
    with requests.Session() as s:
     r = s.post(url_login, data=payload, headers=headers)
     cookies = {'PHPSESSID': requests.utils.dict_from_cookiejar(s.cookies)['PHPSESSID']}
-    
    r2 = requests.get(url_main, cookies=cookies, headers=headers)
-     
-   #print(r2.status_code)
-   #print(r2.url)
+
+#   print(r2.status_code)
+#   print(r2.url)
 #   print(r2.text)
+   return r2
 
+def get_file():
+   data = open(page, 'r').read()
+   #print(data)
+   return data
 
+def parser(page):
    tariff = 0
    tariff_date = 0
    login = 0
@@ -81,7 +100,10 @@ def main(argv):
 
 
 # Create a BeautifulSoup object
-   soup = BeautifulSoup(r2.text, 'html.parser')
+   if page:
+    soup = BeautifulSoup(page, 'html.parser')
+   else:
+    soup = BeautifulSoup(page.text, 'html.parser')
 
 
 # get profile
@@ -134,16 +156,27 @@ def main(argv):
    #print("traffic:")
    #print(traffic)
    script = soup.find("script", text=traffic)
-   #print("script_txt")
+   #print(script)
    #print(script.text)
-
-   traffic_data = re.findall("value:\s+(\d+.\d+)", script.text)
-   #print("traffic data:")
-   #print(traffic_data)
-   #print(traffic_data[0])
-   #print(traffic_data[1])
-   used = traffic_data[0]
-   unused = traffic_data[1]
+   if script:
+     traffic_data = re.findall("value:\s+(\d+)", script.text)
+     #print("traffic data:")
+     #print(traffic_data)
+     #print(traffic_data[0])
+     #print(traffic_data[1])
+   
+#     if traffic_data[0]:
+     used = traffic_data[0]
+#     else:
+#      used = "0"
+     # print(traffic_data[1])
+#     if traffic_data[1]:
+     unused = traffic_data[1]
+#     else:
+#      unused = "0"
+   else:
+    used = "0"
+    unused = "0"
 
    if oformat == 'txt':
      print("Тариф: ",tariff,' (',tariff_date,')', sep="")
@@ -170,5 +203,15 @@ def main(argv):
    elif oformat == 'used':
      print(used,'/',unused)
 
+
+
+def main():
+   args(sys.argv[1:])
+#   get_data()
+   if page:
+    parser(get_file())
+   else:
+    parser(get_data())
+
 if __name__ == "__main__":
-   main(sys.argv[1:])
+   main()

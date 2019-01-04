@@ -11,7 +11,7 @@ password = ''
 oformat = 'txt'
 
 #r2 = ''
-page = ''
+filename = ''
 
 def usage():
     print (sys.argv[0],' -u <user> -p <password> -f <output format: txt, json, used>')
@@ -40,8 +40,8 @@ def args(argv):
          global oformat
          oformat = arg
       elif opt in ("-i"):
-         global page
-         page = arg
+         global filename
+         filename = arg
       else:
         assert False, "unhandled option" 
        
@@ -81,12 +81,12 @@ def get_data():
 #   print(r2.text)
    return r2
 
-def get_file():
-   data = open(page, 'r').read()
+def get_file(i):
+   data = open(i, 'r').read()
    #print(data)
    return data
 
-def parser(page):
+def parser(data):
    tariff = 0
    tariff_date = 0
    login = 0
@@ -100,10 +100,10 @@ def parser(page):
 
 
 # Create a BeautifulSoup object
-   if page:
-    soup = BeautifulSoup(page, 'html.parser')
+   if hasattr(data, 'text'):
+     soup = BeautifulSoup(data.text, 'html.parser')
    else:
-    soup = BeautifulSoup(page.text, 'html.parser')
+     soup = BeautifulSoup(data, 'html.parser')
 
 
 # get profile
@@ -208,8 +208,8 @@ def parser(page):
 def main():
    args(sys.argv[1:])
 #   get_data()
-   if page:
-    parser(get_file())
+   if filename:
+    parser(get_file(filename))
    else:
     parser(get_data())
 

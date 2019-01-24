@@ -14,7 +14,7 @@ oformat = 'txt'
 filename = ''
 
 def usage():
-    print (sys.argv[0],' -u <user> -p <password> -f <output format: txt, json, used>')
+    print (sys.argv[0],' -u <user> -p <password> -f <output format: txt, json, used> -i <input_html_file>')
 
 if len(sys.argv) <= 1:
     usage()
@@ -90,6 +90,10 @@ def parser(data):
    jet_balance = 0
    used = 0
    unused = 0
+   package_name = 0
+   package_start = 0
+   package_end = 0
+   package_traffic = 0
 
 
 # Create a BeautifulSoup object
@@ -157,8 +161,25 @@ def parser(data):
    else:
     used = "0"
     unused = "0"
+   
+   p = soup.find('div', {'id':'package_rest'})
+   if p:
+    #print(p)
+    p_name = p.find('strong') 
+    #print(p_name.contents)
+    package_name = p_name.contents[0]
+    p_start = p_name.find_next('strong')
+    #print(p_start.contents)
+    package_start = p_start.contents[0]
+    p_end = p_start.find_next('strong')
+    #print(p_end.contents)
+    package_end = p_end.contents[0]
+    p_traff = p_end.find_next('strong')
+    #print(p_traff.contents)
+    package_traffic = re.findall(r'\d+',p_traff.contents[0])[0]
 
-   if oformat == 'txt':
+    
+    if oformat == 'txt':
      print("Тариф: ",tariff,' (',tariff_date,')', sep="")
      print("Абон. плата:",tariff_pay)
      print("Статус:",status)
@@ -168,6 +189,11 @@ def parser(data):
      print("IP адрес:",ipaddr)
      print("Использовано:",used)
      print("Осталось:",unused)
+     if p:
+         print("Пакет: ",package_name)
+         print(" Активирован: ", package_start)
+         print(" Закончится: ", package_end)
+         print(" Остаток: ", package_traffic)
    elif oformat == 'json':
      print("{")
      print('"tariff": "',tariff,'",', sep="")
@@ -179,11 +205,14 @@ def parser(data):
      print('"login": "',login,'",', sep="")
      print('"used": "',used,'",', sep="")
      print('"unused": "',unused,'",', sep="")
+     if p:
+         print('"package_name": "', package_name,'",', sep="")
+         print('"package_start": "', package_start,'",', sep="")
+         print('"package_end": "', package_end, '",', sep="")
+         print('"package_traffic": "', package_traffic, '",', sep="")
      print("}")
    elif oformat == 'used':
      print(used,'/',unused)
-
-
 
 def main():
    args(sys.argv[1:])

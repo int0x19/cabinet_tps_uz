@@ -179,7 +179,7 @@ def parser(data):
     package_traffic = re.findall(r'\d+',p_traff.contents[0])[0]
 
     
-    if oformat == 'txt':
+   if oformat == 'txt':
      print("Тариф: ",tariff,' (',tariff_date,')', sep="")
      print("Абон. плата:",tariff_pay)
      print("Статус:",status)
